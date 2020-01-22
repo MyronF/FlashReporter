@@ -40,7 +40,8 @@
         android:id="@+id/input_search"
         android:background="@null"
         android:hint="Find your neighbourhood"
-        android:imeOptions="actionSearch"/>
+        android:imeOptions="actionNext"
+        />
 
 
     </RelativeLayout>
