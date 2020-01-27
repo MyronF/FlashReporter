@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "493501708131",
+    "firebase_url": "https://final-year-proje-1579262610393.firebaseio.com",
+    "project_id": "final-year-proje-1579262610393",
+    "storage_bucket": "final-year-proje-1579262610393.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493501708131:android:910f3672007c26a76f8556",
+        "android_client_info": {
+          "package_name": "myron.com.crimereporter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493501708131-r6ggna6bsbep6upqif3nv1fq4gt27asg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "myron.com.crimereporter",
+            "certificate_hash": "2935a2dd89ae7548abdcc4e80451c8e1c574c0cb"
+          }
+        },
+        {
+          "client_id": "493501708131-22pidr21icjvaddlq42q8mbdhp5fg5pp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVcxabhECQz9EBKvJtVBaZ6WCK28vFT1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493501708131-22pidr21icjvaddlq42q8mbdhp5fg5pp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

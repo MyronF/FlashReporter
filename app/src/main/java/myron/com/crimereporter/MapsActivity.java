@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -36,6 +37,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.security.KeyException;
@@ -69,6 +76,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
+    private DatabaseReference flashReporterDatabase = FirebaseDatabase.getInstance().getReference();
+    private List<MapPointer> mapPointers = new ArrayList<MapPointer>();
 
     //widgets
     private EditText nSearchText;
@@ -128,11 +137,67 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             Log.d(TAG, "geoLocate: Found a location: " + address.toString());
 //            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-
+            writeNewItem(address.getLatitude(), address.getLongitude());
             moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
 
         }
     }
+    private boolean writeNewItem(Double latitude, Double longitude) {
+        try {
+            String itemId = flashReporterDatabase.push().getKey();
+            Log.d(TAG, "itemId: " + itemId);
+            Log.d(TAG, "HHH: " + flashReporterDatabase.child(itemId));
+
+            MapPointer item = new MapPointer(itemId, latitude, longitude);
+
+            flashReporterDatabase.child(itemId).setValue(item);
+            Log.d(TAG, "itemId2: " + itemId);
+        } catch (DatabaseException e){
+            Log.d(TAG, "itemId3: " + e.getMessage());
+            return false;
+        }
+        getMapPointers();
+
+        for (MapPointer mapPointer: mapPointers){
+            Log.d(TAG,"hiii" + mapPointer.getID());
+        }
+
+        return true;
+    }
+
+     private void getMapPointers() {
+         Log.d(TAG,"getMapPointers");
+
+        mapPointers.clear();
+
+        final Toast errorToast = Toast.makeText(this, "Unable to get done items", Toast.LENGTH_LONG);
+
+        flashReporterDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    try {
+                        MapPointer item = snapshot.getValue(MapPointer.class);
+                        Log.d(TAG,"getMapPointers " + item);
+                        mapPointers.add(item);
+                    } catch (DatabaseException e){
+                        Log.d(TAG,e.getMessage());
+                        errorToast.show();
+                        finish();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                errorToast.show();
+                finish();
+            }
+        });
+    }
+//Get single item from the database with its ID
+//    toDoItemReference = FirebaseDatabase.getInstance().getReference().child(itemID);
 
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the current device location");
