@@ -1,24 +1,27 @@
 package myron.com.crimereporter;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.IgnoreExtraProperties;
+import android.util.Log;
 
-@IgnoreExtraProperties
 public class MapPointer {
+
     private String id;
-//    private LatLng latLng;
     private Double latitude;
     private Double longitude;
-
+    private String reviews;
+    private Double rating;
+    private Integer votes;
 
     public MapPointer() {}
 
-    public MapPointer(String id, Double latitude, Double longitude) {
+    public MapPointer(String id, Double latitude, Double longitude, String reviews, Double rating, Integer Vote) {
+        Log.d("mappointer", "message" +  latitude + "," + longitude );
+        Log.d("generateRandomReviews", "get reviews 2" + reviews);
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
-
-
+        this.reviews = reviews;
+        this.rating = rating;
+        this.votes = Vote;
     }
 
     public String getID() {
@@ -43,6 +46,30 @@ public class MapPointer {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setReviews (String reviews){
+        this.reviews = reviews;
+    }
+
+    public String getReviews(){
+        return reviews;
+    }
+
+    public void setRating (Double rating){
+        this.rating = rating;
+    }
+
+    public Double getRating(){
+        return rating;
+    }
+
+    public void setVotes (Integer votes){
+        this.votes = votes;
+    }
+
+    public Integer getVotes(){
+        return votes;
     }
 
 }

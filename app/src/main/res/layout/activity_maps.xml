@@ -34,17 +34,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toRightOf="@id/ic_magnify"
-        android:maxLines="1"
+        android:singleLine="true"
         android:layout_centerVertical="true"
         android:textSize="15sp"
         android:textColor="#000"
         android:id="@+id/input_search"
         android:background="@null"
         android:hint="Find your neighbourhood"
-        android:imeOptions="actionNext"
-        />
-
+        android:imeOptions="actionDone" />
 
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="15dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/write_review"
+        android:src="@drawable/ic_info"/>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/relLayout1"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/place_info"
+        android:src="@drawable/ic_review"/>
+
+    <ImageView
+        android:id="@+id/voteID"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="141dp"
+        android:layout_marginBottom="550dp"
+        android:src="@drawable/ic_thumbs" />
 
 </RelativeLayout>

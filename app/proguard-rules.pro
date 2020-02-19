@@ -26,6 +26,6 @@
 # This rule will properly ProGuard all the model classes in
 # the package com.yourcompany.models. Modify to fit the structure
 # of your app.
--keepclassmembers class myron.com.crimereporter.MapPointer{
+-keepclassmembers class myron.com.crimereporter.ReviewLocation{
   *;
 }
