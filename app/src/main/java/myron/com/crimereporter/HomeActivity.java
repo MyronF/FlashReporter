@@ -15,6 +15,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
+
 public class HomeActivity extends AppCompatActivity {
     Button btnLogout;
     FirebaseAuth mFirebaseAuth;
@@ -42,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
                     FirebaseAuth.getInstance().signOut();
                     Intent intent = new Intent(HomeActivity.this, MainActivity.class);
                     startActivity(intent);
-                    Log.d("LOGOUT", "Successfully Logged Out");
+//                    Log.d("LOGOUT", "Successfully Logged Out");
                 }
             });
         }

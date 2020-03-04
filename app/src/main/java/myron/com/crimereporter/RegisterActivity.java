@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+//https://www.youtube.com/watch?v=V0ZrnL-i77Q
+
 public class RegisterActivity extends AppCompatActivity {
 
     EditText emailID, password;
@@ -55,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }else if (email.isEmpty() && pwd.isEmpty()){
                     Toast.makeText(RegisterActivity.this, "Fields are empty", Toast.LENGTH_SHORT).show();
 
-                }else if (!email.isEmpty() && pwd.isEmpty()){
+                }else if (!email.isEmpty() && !pwd.isEmpty()){
                     mFirebaseAuth.createUserWithEmailAndPassword(email,pwd).addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -75,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
 //        tvSignIn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent i = new Intent(RegisterActivity.this, HomeActivity.class);
+//                Intent i = new Intent(RegisterActivity.this, MainActivity.class);
 //                startActivity(i);
 //            }
 //        });

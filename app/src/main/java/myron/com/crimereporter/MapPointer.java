@@ -14,8 +14,6 @@ public class MapPointer {
     public MapPointer() {}
 
     public MapPointer(String id, Double latitude, Double longitude, String reviews, Double rating, Integer Vote) {
-        Log.d("mappointer", "message" +  latitude + "," + longitude );
-        Log.d("generateRandomReviews", "get reviews 2" + reviews);
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;

@@ -24,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+//https://www.youtube.com/watch?v=V0ZrnL-i77Q
 public class MainActivity extends AppCompatActivity {
 
     EditText emailID, password;
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }else{
-                    Log.d("LoginPage","login UNsuccessful");
+                    Log.d("LoginPage","login Unsuccessful");
                     Toast.makeText(MainActivity.this, "Error Occurred, Try again", Toast.LENGTH_SHORT).show();
                 }
 
@@ -113,38 +114,4 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
-/*
-    private void init(){
-        Button btnMap = (Button) findViewById(R.id.btnMap);
-        btnMap.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
-
-    public boolean isGooglesServicesOK(){
-        Log.d(TAG, "isServicesOK: checking google services version");
-
-        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
-
-        if (available == ConnectionResult.SUCCESS){
-            //everything is fine and the user can make map requests
-            Log.d(TAG, "isServicesOK: Google services are working");
-            return true;
-        }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            //an error occurred but we can resolve it
-            Log.d(TAG, "isServicesOK: an error occurred but is fixable");
-
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, ERROR_DIALOG_REQUEST);
-            dialog.show();
-        }else{
-            Toast.makeText(this, "you can't make map requests", Toast.LENGTH_SHORT).show();
-        }
-        return false;
-    }*/
-
 }

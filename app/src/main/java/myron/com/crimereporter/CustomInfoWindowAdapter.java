@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
+//https://www.youtube.com/watch?v=U6Z8FkjGEb4&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=12
+
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final View mWindow;

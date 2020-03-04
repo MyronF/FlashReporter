@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseException;
@@ -63,6 +64,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Double latitude, longitude;
     private Marker mMarker;
     public Integer vote;
+    FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     //widgets
     private EditText nSearchText;
@@ -73,10 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private FusedLocationProviderClient mfusedLocationProviderclient;
 
-
-    //Allow users to vote
-    //votes should be added to the current votes in the database
-
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(this,"Map is ready",Toast.LENGTH_SHORT).show();
@@ -91,7 +91,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             init();
             storeUserReviews();
-
         }
     }
 
@@ -103,19 +102,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         nSearchText = (EditText) findViewById(R.id.input_search);
         mInfo = (ImageView) findViewById(R.id.place_info);
 
-        mInfo.setOnClickListener(new View.OnClickListener() {
+        mvoteID = (ImageView) findViewById(R.id.voteID);
+        mvoteID.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v) {
-                Log.d (TAG, "onClick: clicked place info");
-                try{
-                    if(mMarker.isInfoWindowShown()){
-                        mMarker.hideInfoWindow();
-                    }else{
-                        mMarker.showInfoWindow();
-                    }
-                }catch(NullPointerException e){
-                    Log.d (TAG, "onClick: NullPointerException " + e.getMessage());
-                }
+            public void onClick(View view){
+//                UserVotes();
             }
         });
 
@@ -131,8 +122,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view){
                 try{
                     Intent intent = new Intent(MapsActivity.this, ReviewLocation.class);
-//                    Log.d(TAG, "intent1: " + latitude);
-//                    Log.d(TAG, "intent2: " + longitude);
                     intent.putExtra("latitude",latitude);
                     intent.putExtra("longitude",longitude);
                     startActivity(intent);
@@ -144,34 +133,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void UserVotes(){
-
-        mvoteID = (ImageView) findViewById(R.id.voteID);
-        mvoteID.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                try{
-
-                    MapPointer storeVote = new MapPointer();
-
-                    vote = storeVote.getVotes();
-                    vote = vote + 1;
-
-                    Log.d(TAG, "storeUserVotes " + vote);
-                }catch(NullPointerException e){
-                    Log.d(TAG, "storeUserVotes " + e);
-                }
-            }
-        });
-    }
-
     public void getLocationReview(){
-        String tool = "";
+        String displayReview = "";
         List<Double> storeRatingList = new ArrayList<Double>();
-        List<String> storeReviewList = new ArrayList<String>();
+        List<Integer> storeVotes = new ArrayList<Integer>();
         Double total = 0.0, averageRating, averageRatingDouble;
-        int counter = 0;
-        String word = "";
+        int counter = 0, max;
 
         for (MapPointer mapPointer: mapPointers){
             Log.d(TAG,"ArraySize " + mapPointers.size());
@@ -192,33 +159,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_ZOOM));
                     mMap.clear();
 
-                    String title = "Reviews: ";
+                    String title = "Top Voted Review: ";
 
                     storeRatingList.add(mapPointer.getRating());
-                    storeReviewList.add(mapPointer.getReviews());
+                    storeVotes.add(mapPointer.getVotes());
+
+                        //get the highest number of votes
+                         max = Integer.MIN_VALUE;
+                        for (int j = 0; j < storeVotes.size(); j++){
+                            if (max < storeVotes.get(j)){
+                                max = storeVotes.get(j);
+                                Log.d("HighestVote","Highest vote is " + max);
+                            }
+                        }
+
 
                         for (int i = 0; i < storeRatingList.size(); i++){
                             if (counter == mapPointers.size()){
                                 total = total + storeRatingList.get(i);
-
-                                Log.d(TAG,"getVotes: " + mapPointer.getVotes());
-                                //display reviews with least safety score
-                                if (mapPointer.getVotes() >= 80){
-                                    Log.d(TAG,"getVotes: " + mapPointer.getVotes());
-
-                                    tool = mapPointer.getReviews();
-//                                    RatingTOReview.add(storeReviewList.get(i));
-//                                    Log.d(TAG,"store Review List: review " + word);
-
-                                }
                             }
                         }
+
+
+                    if (mapPointer.getVotes() >= max){
+                        displayReview = mapPointer.getReviews();
+                    }
+
 
                     averageRating = total / storeRatingList.size();
                     averageRatingDouble = Math.round(averageRating * 10) / 10.0;
 
-//                    Log.d(TAG,"store Review List: CounterTest " + RatingTOReview.contains(equals("Gangs")));
-                    String snippet = "Top voted reviews: " + tool + "\n" + "Average Safety rating: " + averageRatingDouble + "\n";
+                    //Display the information in infoWindow on the map
+                    String snippet = displayReview + "\n" + "Average Safety rating: " + averageRatingDouble + "\n"
+                            + "votes: " + max + "\n";
                     MarkerOptions options = new MarkerOptions().position(latlng).title(title).snippet(snippet);
 
                     mMarker = mMap.addMarker(options);
@@ -235,7 +208,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    // use the read method to retrieve data from the database to display it onto the info windows
+    // using this read method to retrieve data from the database to display it onto the info windows
     private void getMapPointers() {
         Log.d(TAG,"getMapPointers");
 
@@ -260,7 +233,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 getLocationReview();
             }
 
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 errorToast.show();
@@ -271,6 +243,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     //overide the enter key on the map
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void init(){
         Log.d(TAG, "init: initialising");
 
@@ -290,6 +263,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void geoLocate(){
         Log.d(TAG, "geoLocate: geolocating");
 
@@ -349,6 +323,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //Get single item from the database with its ID
 //    toDoItemReference = FirebaseDatabase.getInstance().getReference().child(itemID);
 
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void getDeviceLocation(){
         Log.d(TAG, "getDeviceLocation: getting the current device location");
 
@@ -382,6 +357,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void moveCamera(LatLng latLng, float zoom, String title){
         Log.d(TAG, "moveCamera: moving camera to: latitude: " + latLng.latitude + ",longitude: " + latLng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -390,13 +366,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(options);
     }
 
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void initialiseMap(){
         Log.d(TAG, "initialiseMap: initialising map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapsActivity.this);
     }
 
-
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     private void getLocationPermission(){
         Log.d(TAG, "getLocationPermission: getting location permission");
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
@@ -418,6 +395,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(TAG, "onRequestPermissionsResult: called");
@@ -450,9 +428,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void generateRandomReviews(){
         
             try {
-                Double latitude = 51.5332359, longitude = -0.4735494;
+                Double latitude = 51.5331506, longitude = -0.4741797;
                 String reviewToPrint= "";
-                Double rangeMin = 0.0, rangeMax = 5.0;
                 Random rand = new Random();
                 int vote = 0;
 
@@ -462,18 +439,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     SafetyScore = Math.round(SafetyScore * 10) / 10.0;
 
                     int randomNumber =  rand.nextInt(4);
-//                    Log.d("generateRandomReviews", "IN FOR LOOP " + randomNumber);
 
                     if (randomNumber == 0) {
                         reviewToPrint = "Theft of bicycles";
                         vote = rand.nextInt(100);
 
                     } else if (randomNumber == 1){
-                        reviewToPrint = "Robberies attempted";
+                        reviewToPrint = "Robberies at night";
                         vote = rand.nextInt(100);
 
                     } else if(randomNumber == 2) {
-                        reviewToPrint = "very dangerous at night time";
+                        reviewToPrint = "Shop break in by a gang";
                         vote = rand.nextInt(100);
 
                     } else if (randomNumber == 3){
@@ -493,15 +469,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     MapPointer item = new MapPointer(itemId, latitude, longitude, reviewToPrint, SafetyScore, vote);
 
                     flashReporterDatabase.child(itemId).setValue(item);
-
                 }
 
             } catch (DatabaseException e){
                 Log.d("generateRandomReviews", "itemId3: " + e.getMessage());
-
             }
-
-
         }
 
 }

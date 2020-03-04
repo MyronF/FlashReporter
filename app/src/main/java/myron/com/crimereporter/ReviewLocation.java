@@ -1,5 +1,6 @@
 package myron.com.crimereporter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,13 +60,11 @@ public class ReviewLocation extends AppCompatActivity {
                 Float rating = new Float(ratingBar.getRating());
                 Double doubleResult = Double.parseDouble(new Float(rating).toString());
 
-//                Log.d("Rating bar", "rating bar" + doubleResult);
-
                 try{
                     MapsActivity mapsActivity = new MapsActivity();
                     reviews = inputReview.getText().toString();
                     ratings = doubleResult;
-                    Votes = mapsActivity.vote;
+                    Votes = 1;
 
                     writeNewItem();
 
@@ -90,6 +89,8 @@ public class ReviewLocation extends AppCompatActivity {
             return false;
         }
         Toast.makeText(this,"Review posted",Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
         return true;
     }
 
