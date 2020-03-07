@@ -139,7 +139,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         List<Integer> storeVotes = new ArrayList<Integer>();
         Double total = 0.0, averageRating, averageRatingDouble;
         int counter = 0, max;
-
         for (MapPointer mapPointer: mapPointers){
             Log.d(TAG,"ArraySize " + mapPointers.size());
             counter = counter +1;
@@ -158,7 +157,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d(TAG, "getLocationReview: moving camera to: latitude: " + latlng.latitude + ",longitude: " + latlng.longitude);
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, DEFAULT_ZOOM));
                     mMap.clear();
-
                     String title = "Top Voted Review: ";
 
                     storeRatingList.add(mapPointer.getRating());
@@ -173,18 +171,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             }
                         }
 
-
                         for (int i = 0; i < storeRatingList.size(); i++){
                             if (counter == mapPointers.size()){
                                 total = total + storeRatingList.get(i);
                             }
                         }
 
-
                     if (mapPointer.getVotes() >= max){
                         displayReview = mapPointer.getReviews();
                     }
-
 
                     averageRating = total / storeRatingList.size();
                     averageRatingDouble = Math.round(averageRating * 10) / 10.0;
@@ -197,11 +192,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMarker = mMap.addMarker(options);
                     mMarker.showInfoWindow();
 
-
                 }catch(NullPointerException e){
                     Log.d(TAG,"getMapPointers: NullPointerException " + e.getMessage());
                 }
-
                 Log.d(TAG,"User Reviews " + mapPointer.getReviews());
             }
         }
