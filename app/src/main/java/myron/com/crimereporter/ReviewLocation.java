@@ -61,7 +61,6 @@ public class ReviewLocation extends AppCompatActivity {
                 Double doubleResult = Double.parseDouble(new Float(rating).toString());
 
                 try{
-                    MapsActivity mapsActivity = new MapsActivity();
                     reviews = inputReview.getText().toString();
                     ratings = doubleResult;
                     Votes = 1;
@@ -82,13 +81,19 @@ public class ReviewLocation extends AppCompatActivity {
 
             MapPointer item = new MapPointer(itemId, latitude, longitude, reviews, ratings, Votes);
 
-            flashReporterDatabase.child(itemId).setValue(item);
+            if (reviews.equals("")){
+                Toast.makeText(this,"Failed to post the review",Toast.LENGTH_SHORT).show();
+            }else if (latitude.equals(0)|| longitude.equals(0)){
+                Toast.makeText(this,"Failed to post the review",Toast.LENGTH_SHORT).show();
+            }else{
+                flashReporterDatabase.child(itemId).setValue(item);
+                Toast.makeText(this,"Review posted",Toast.LENGTH_SHORT).show();
+            }
             Log.d(TAG, "itemId2: " + itemId);
         } catch (DatabaseException e){
             Log.d(TAG, "itemId3: " + e.getMessage());
             return false;
         }
-        Toast.makeText(this,"Review posted",Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
         return true;

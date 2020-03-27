@@ -276,8 +276,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Address address = list.get(0);
 
             Log.d(TAG, "geoLocate: Found a location: " + address.toString());
-//            Toast.makeText(this, address.toString(), Toast.LENGTH_SHORT).show();
-//            writeNewItem(address.getLatitude(), address.getLongitude());
 
             latitude = address.getLatitude();
             longitude = address.getLongitude();
@@ -287,30 +285,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
     }
-
-    /*
-    private boolean writeNewItem(Double latitude, Double longitude) {
-        try {
-            String itemId = flashReporterDatabase.push().getKey();
-//            Log.d(TAG, "itemId: " + itemId);
-//            Log.d(TAG, "HHH: " + flashReporterDatabase.child(itemId));
-
-            ReviewLocation item = new ReviewLocation(itemId, latitude, longitude, "Hello");
-
-            flashReporterDatabase.child(itemId).setValue(item);
-            Log.d(TAG, "itemId2: " + itemId);
-        } catch (DatabaseException e){
-            Log.d(TAG, "itemId3: " + e.getMessage());
-            return false;
-        }
-        getMapPointers();
-
-        for (ReviewLocation mapPointer: mapPointers){
-            Log.d(TAG,"hiii" + mapPointer.getID());
-        }
-
-        return true;
-    }*/
 
 
 //Get single item from the database with its ID
@@ -360,6 +334,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     //https://www.youtube.com/watch?v=OknMZUnTyds&list=PLgCYzUzKIBE-vInwQhGSdnbyJ62nixHCt
+    //https://developers.google.com/maps/documentation/android-sdk/map-with-marker
     private void initialiseMap(){
         Log.d(TAG, "initialiseMap: initialising map");
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
